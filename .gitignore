@@ -1,0 +1,9 @@
+﻿################################################################################
+# この .gitignore ファイルは Microsoft(R) Visual Studio によって自動的に作成されました。
+################################################################################
+
+/.vs
+/DreamJourney/bin/Debug/net10.0-windows
+/DreamJourney/obj
+/Orfevre/bin/Debug/net10.0-windows
+/Orfevre/obj

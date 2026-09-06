@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DreamJourney/DreamJourney.csproj" />
+  <Project Path="Orfevre/Orfevre.csproj" />
+</Solution>
