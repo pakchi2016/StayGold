@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.Json;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace DreamJourney
 {
@@ -13,10 +15,9 @@ namespace DreamJourney
 
         static async Task Main(string[] args)
         {
-            // 引数がなければ何もしないで終了
-            if (args.Length == 0) return;
+            if (args.Length == 0) args[0] = "Start";
             NamedPipeClientStream pipeClientStream;
-            var command = args[0];
+            var command = args;
             try
             {
                 pipeClientStream = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
@@ -24,7 +25,8 @@ namespace DreamJourney
             }
             catch (TimeoutException)
             {
-                if(File.Exists(ServicApp)) Process.Start(ServicApp);
+                if(command[0] == "Close") return;
+                if (File.Exists(ServicApp)) Process.Start(ServicApp);
                     else return;
                 pipeClientStream = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
                 for(int i = 0; i < 10; i++)
@@ -44,8 +46,9 @@ namespace DreamJourney
             if (!pipeClientStream.IsConnected) return;
             using (var writer = new StreamWriter(pipeClientStream) { AutoFlush = true })
             {
-                // コマンドを送信
-                await writer.WriteLineAsync(command);
+                // コマンドをJson形式で送信する
+                var commandJson = JsonSerializer.Serialize(command);
+                await writer.WriteLineAsync(commandJson);
             }
         }
     }
